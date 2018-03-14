@@ -5,9 +5,15 @@ from discord.ext.commands import Bot
 from discord.ext import commands
 import platform
 import sys
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
+# get spotify credentials from environment variables
+client_credentials_manager = SpotifyClientCredentials()
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 # setup Bot
-client = Bot(description="Dad Bot by iggnore", command_prefix=">", pm_help = False)
+client = Bot(description="Spotify Searcher by iggnore", command_prefix=".", pm_help = False)
 
 # open private key file
 key_file = open('./discord_key.txt', 'r')
@@ -36,9 +42,17 @@ async def on_ready():
 # Counts entries in #weekly-challenges
 @client.event
 async def on_message(message):
-	# make a small announcement in the current channel
-	if message.content.lower().startswith("i'm "):
-		await client.send_message(message.channel, content='Hi {}, i\'m Dad'.format(message.content[4:]))
-	
+	if message.content.startswith('.spotify-track '):
+		results = sp.search(q=message.content[15:], limit=1, type='track') 
+		url = 'https://open.spotify.com/track/{}'.format(results['tracks']['items'][0]['id'])
+		await client.send_message(message.channel, content=url)
+	elif message.content.startswith('.spotify-album '):
+		results = sp.search(q=message.content[15:], limit=1, type='album') 
+		url = 'https://open.spotify.com/album/{}'.format(results['albums']['items'][0]['id'])
+		await client.send_message(message.channel, content=url)
+	elif message.content.startswith('.spotify-artist '):
+		results = sp.search(q=message.content[16:], limit=1, type='artist') 
+		url = 'https://open.spotify.com/artist/{}'.format(results['artists']['items'][0]['id'])
+		await client.send_message(message.channel, content=url)
 
 client.run(str(api_key)) # Send API key from opened file
