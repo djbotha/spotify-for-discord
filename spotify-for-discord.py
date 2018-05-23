@@ -42,17 +42,26 @@ async def on_ready():
 # Counts entries in #weekly-challenges
 @client.event
 async def on_message(message):
-	if message.content.startswith('.spotify-track '):
-		results = sp.search(q=message.content[15:], limit=1, type='track') 
+	if message.content.startswith('.song '):
+		results = sp.search(q=message.content[6:], limit=1, type='track') 
 		url = 'https://open.spotify.com/track/{}'.format(results['tracks']['items'][0]['id'])
 		await client.send_message(message.channel, content=url)
-	elif message.content.startswith('.spotify-album '):
-		results = sp.search(q=message.content[15:], limit=1, type='album') 
+	elif message.content.startswith('.track '):
+		results = sp.search(q=message.content[7:], limit=1, type='track') 
+		url = 'https://open.spotify.com/track/{}'.format(results['tracks']['items'][0]['id'])
+		await client.send_message(message.channel, content=url)
+	elif message.content.startswith('.album '):
+		results = sp.search(q=message.content[7:], limit=1, type='album') 
 		url = 'https://open.spotify.com/album/{}'.format(results['albums']['items'][0]['id'])
 		await client.send_message(message.channel, content=url)
-	elif message.content.startswith('.spotify-artist '):
-		results = sp.search(q=message.content[16:], limit=1, type='artist') 
+	elif message.content.startswith('.artist '):
+		results = sp.search(q=message.content[8:], limit=1, type='artist') 
 		url = 'https://open.spotify.com/artist/{}'.format(results['artists']['items'][0]['id'])
 		await client.send_message(message.channel, content=url)
 
+async def dontcrash():
+    channels = client.get_all_channels()
+    asyncio.sleep(50)
+
+client.loop.create_task(dontcrash())
 client.run(str(api_key)) # Send API key from opened file
