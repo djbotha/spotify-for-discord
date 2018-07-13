@@ -38,6 +38,7 @@ async def on_ready():
 	
 	print('Use this link to invite {}:'.format(client.user.name))
 	print('https://discordapp.com/oauth2/authorize?client_id={}&scope=bot&permissions=8'.format(client.user.id))
+	return await client.change_presence(game=discord.Game(name='sick tracks 🎸')) #This is buggy, let us know if it doesn't work.
 
 # Counts entries in #weekly-challenges
 @client.event
@@ -61,7 +62,7 @@ async def on_message(message):
 
 async def dontcrash():
     channels = client.get_all_channels()
-    asyncio.sleep(50)
+    asyncio.sleep(45)
 
 client.loop.create_task(dontcrash())
 client.run(str(api_key)) # Send API key from opened file
